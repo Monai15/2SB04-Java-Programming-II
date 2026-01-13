@@ -64,21 +64,20 @@ public class Main {
                 System.out.print("พิมพ์ quest id: ");
                 String id = sc.nextLine().trim();
 
-                Quest q = qs.findById(id);
-                if (q == null) {
-                    System.out.println("ไม่พบ quest id นี้");
-                    continue;
-                }
-
-                boolean ok = q.canComplete(energy, logic, luck);
-                if (ok) {
-                    int r = q.rewardPoints(key);
-                    totalScore += r;
-                    qs.stats.put("completed", qs.stats.get("completed") + 1);
-                    System.out.println("สำเร็จ! +" + r + " points");
-                } else {
-                    qs.stats.put("failed", qs.stats.get("failed") + 1);
-                    System.out.println("ยังทำไม่ได้ (ต้องมี energy>75 หรือ logic>60 หรือ luck>70)");
+                try {
+                    Quest q = qs.findById(id);
+                    boolean ok = q.canComplete(energy, logic, luck);
+                    if (ok) {
+                        int r = q.rewardPoints(key);
+                        totalScore += r;
+                        qs.stats.put("completed", qs.stats.get("completed") + 1);
+                        System.out.println("สำเร็จ! +" + r + " points");
+                    } else {
+                        qs.stats.put("failed", qs.stats.get("failed") + 1);
+                        System.out.println("ยังทำไม่ได้ (ต้องมี energy>75 หรือ logic>60 หรือ luck>70)");
+                    }
+                } catch (InvalidQuestException e) {
+                    System.out.println(e.getMessage()); // Print message จาก exception
                 }
 
             } else if (m == 3) {

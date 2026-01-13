@@ -31,8 +31,9 @@ public class QuestService {
 
     public Quest findById(String id) {
         for (Quest q : quests) {
-            if (q.getId().equalsIgnoreCase(id)) return q;
+            if (q.getId().equalsIgnoreCase(id))
+                return q;
         }
-        return null;
+        throw new InvalidQuestException("!!ไม่พบ quest id: " + id);
     }
 }
