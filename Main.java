@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.*;
 
 public class Main {
@@ -51,8 +52,6 @@ public class Main {
         QuestService qs = new QuestService();
         qs.seedQuests(key);
 
-        int totalScore = 0;
-
         while (true) {
             System.out.println("\n[Menu] 1) List 2) Do quest 3) Stats 4) Exit");
             int m = askInt(sc, "เลือกเมนู: ", 1, 4);
@@ -69,7 +68,7 @@ public class Main {
                     boolean ok = q.canComplete(energy, logic, luck);
                     if (ok) {
                         int r = q.rewardPoints(key);
-                        totalScore += r;
+                        qs.addScore(r);
                         qs.stats.put("completed", qs.stats.get("completed") + 1);
                         System.out.println("สำเร็จ! +" + r + " points");
                     } else {
@@ -82,16 +81,22 @@ public class Main {
 
             } else if (m == 3) {
                 System.out.println("completed=" + qs.stats.get("completed") + ", failed=" + qs.stats.get("failed"));
-                System.out.println("score=" + totalScore);
+                System.out.println("score=" + qs.getTotalScore());
 
             } else {
                 break;
             }
         }
 
+        try {
+            qs.saveToCSV("stats.csv");
+        } catch (IOException e) {
+            System.out.println("Error saving CSV: " + e.getMessage());
+        }
+
         System.out.println("\n=== Result ===");
-        System.out.println("score=" + totalScore);
-        System.out.println("signature=" + makeSignatureV2(studentId, totalScore, qs.stats.get("completed")));
+        System.out.println("score=" + qs.getTotalScore());
+        System.out.println("signature=" + makeSignatureV2(studentId, qs.getTotalScore(), qs.stats.get("completed")));
 
         // TODO: พิมพ์ 1-2 ประโยคในโปรแกรมว่า OOP ช่วยให้โค้ดดูแลง่ายขึ้นอย่างไร
 

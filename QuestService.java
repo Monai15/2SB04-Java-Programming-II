@@ -1,8 +1,10 @@
 import java.util.*;
+import java.io.*;
 
 public class QuestService {
     public ArrayList<Quest> quests = new ArrayList<>();
     public HashMap<String, Integer> stats = new HashMap<>();
+    private int totalScore = 0;
 
     public QuestService() {
         stats.put("completed", 0);
@@ -35,5 +37,23 @@ public class QuestService {
                 return q;
         }
         throw new InvalidQuestException("!!ไม่พบ quest id: " + id);
+    }
+
+    // เปลี่ยนตัวแปร totalScore มาเป็นรูปแบบ Getter Setter แทนแบบเก่าที่อยู่ใน
+    // Main.java
+    public void addScore(int points) {
+        totalScore += points;
+    }
+
+    public int getTotalScore() {
+        return totalScore;
+    }
+
+    // CSV file save method
+    public void saveToCSV(String filename) throws IOException {
+        try (PrintWriter pw = new PrintWriter(filename)) {
+            pw.println("completed,failed,score"); // Header
+            pw.println(stats.get("completed") + "," + stats.get("failed") + "," + totalScore); // Data row
+        }
     }
 }
